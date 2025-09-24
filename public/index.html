@@ -1,0 +1,223 @@
+@@ .. @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>AI Evaluation System</title>
+-    <script src="https://cdn.tailwindcss.com"></script>
++    <link rel="preconnect" href="https://fonts.googleapis.com">
++    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
++    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
++    <link rel="stylesheet" href="/css/styles.css">
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script src="/socket.io/socket.io.js"></script>
++    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+ </head>
+-<body class="bg-gray-50 min-h-screen">
+-    <div class="container mx-auto px-4 py-8">
+-        <header class="mb-8">
+-            <h1 class="text-4xl font-bold text-gray-900 mb-2">AI Evaluation System</h1>
+-            <p class="text-gray-600">Advanced evaluation platform for autonomous vehicles and robotics</p>
++<body>
++    <!-- Navigation -->
++    <nav class="navbar">
++        <div class="container">
++            <div class="navbar-content">
++                <a href="#" class="navbar-brand">🤖 AI Evaluation System</a>
++                <ul class="navbar-nav">
++                    <li><a href="#dashboard" class="active">Dashboard</a></li>
++                    <li><a href="#evaluations">Evaluations</a></li>
++                    <li><a href="#tasks">Tasks</a></li>
++                    <li><a href="#metrics">Metrics</a></li>
++                    <li><a href="#system">System</a></li>
++                </ul>
++            </div>
++        </div>
++    </nav>
++
++    <div class="container">
++        <!-- Dashboard Header -->
++        <header class="dashboard-header fade-in">
++            <h1 class="dashboard-title">AI Evaluation Dashboard</h1>
++            <p class="dashboard-subtitle">Advanced evaluation platform for autonomous vehicles and robotics</p>
+         </header>
+ 
+-        <!-- Status Cards -->
+-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Active Evaluations</h3>
+-                <p class="text-3xl font-bold text-blue-600" id="activeEvaluations">0</p>
+-                <p class="text-sm text-gray-500 mt-1">Currently running</p>
++        <!-- Metrics Overview -->
++        <div class="grid grid-cols-4 mb-8">
++            <div class="card metric-card slide-up">
++                <div class="metric-value" id="activeEvaluations">0</div>
++                <div class="metric-label">Active Evaluations</div>
++                <div class="metric-change positive" id="evaluationsChange">+12% from last week</div>
+             </div>
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Total Tasks</h3>
+-                <p class="text-3xl font-bold text-green-600" id="totalTasks">0</p>
+-                <p class="text-sm text-gray-500 mt-1">Available scenarios</p>
++            <div class="card metric-card slide-up">
++                <div class="metric-value" id="totalTasks">0</div>
++                <div class="metric-label">Total Tasks</div>
++                <div class="metric-change positive" id="tasksChange">+5 new tasks</div>
+             </div>
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-lg font-semibold text-gray-900 mb-2">Success Rate</h3>
+-                <p class="text-3xl font-bold text-purple-600" id="successRate">0%</p>
+-                <p class="text-sm text-gray-500 mt-1">Overall performance</p>
++            <div class="card metric-card slide-up">
++                <div class="metric-value" id="successRate">0%</div>
++                <div class="metric-label">Success Rate</div>
++                <div class="metric-change positive" id="successChange">+2.3% improvement</div>
+             </div>
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-lg font-semibold text-gray-900 mb-2">System Status</h3>
+-                <p class="text-lg font-semibold text-green-600" id="systemStatus">Online</p>
+-                <p class="text-sm text-gray-500 mt-1">All systems operational</p>
++            <div class="card metric-card slide-up">
++                <div class="status status-success" id="systemStatus">
++                    <span class="loading" style="display: none;"></span>
++                    Online
++                </div>
++                <div class="metric-label">System Status</div>
++                <div class="metric-change" id="uptimeChange">99.9% uptime</div>
+             </div>
+         </div>
+ 
+-        <!-- Main Content Grid -->
+-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
++        <!-- Main Dashboard Content -->
++        <div class="grid grid-cols-2 gap-8">
+             <!-- Performance Chart -->
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Performance Metrics</h3>
+-                <canvas id="performanceChart" width="400" height="200"></canvas>
++            <div class="card">
++                <div class="card-header">
++                    <h3 class="card-title">Performance Metrics</h3>
++                    <p class="card-subtitle">Real-time evaluation performance over time</p>
++                </div>
++                <div class="chart-container">
++                    <canvas id="performanceChart"></canvas>
++                </div>
+             </div>
+ 
+             <!-- Recent Evaluations -->
+-            <div class="bg-white p-6 rounded-lg shadow-md">
+-                <h3 class="text-xl font-semibold text-gray-900 mb-4">Recent Evaluations</h3>
+-                <div id="recentEvaluations" class="space-y-3">
+-                    <!-- Evaluations will be populated here -->
++            <div class="card">
++                <div class="card-header">
++                    <h3 class="card-title">Recent Evaluations</h3>
++                    <p class="card-subtitle">Latest evaluation results and status</p>
++                </div>
++                <div id="recentEvaluations">
++                    <div class="skeleton" style="height: 60px; margin-bottom: 12px;"></div>
++                    <div class="skeleton" style="height: 60px; margin-bottom: 12px;"></div>
++                    <div class="skeleton" style="height: 60px;"></div>
+                 </div>
+             </div>
+         </div>
+ 
+-        <!-- Control Panel -->
+-        <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
+-            <h3 class="text-xl font-semibold text-gray-900 mb-4">Control Panel</h3>
+-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+-                <button id="startEvaluation" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+-                    Start New Evaluation
+-                </button>
+-                <button id="generateTask" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors">
+-                    Generate Task
+-                </button>
+-                <button id="viewMetrics" class="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors">
+-                    View Detailed Metrics
+-                </button>
++        <!-- Task Management -->
++        <div class="card mt-8">
++            <div class="card-header">
++                <h3 class="card-title">Task Management</h3>
++                <p class="card-subtitle">Create and manage evaluation tasks</p>
++            </div>
++            
++            <div class="grid grid-cols-3 gap-4 mb-6">
++                <div class="form-group">
++                    <label class="form-label">Task Type</label>
++                    <select id="taskType" class="form-select">
++                        <option value="driving">Autonomous Driving</option>
++                        <option value="navigation">Robot Navigation</option>
++                        <option value="manipulation">Object Manipulation</option>
++                    </select>
++                </div>
++                <div class="form-group">
++                    <label class="form-label">Difficulty</label>
++                    <select id="taskDifficulty" class="form-select">
++                        <option value="easy">Easy</option>
++                        <option value="medium">Medium</option>
++                        <option value="hard">Hard</option>
++                    </select>
++                </div>
++                <div class="form-group">
++                    <label class="form-label">Environment</label>
++                    <select id="taskEnvironment" class="form-select">
++                        <option value="simulation">Simulation</option>
++                        <option value="real">Real World</option>
++                    </select>
++                </div>
++            </div>
++            
++            <div class="flex gap-4">
++                <button id="generateTask" class="btn btn-primary">
++                    <span>Generate Task</span>
++                </button>
++                <button id="startEvaluation" class="btn btn-success">
++                    <span>Start Evaluation</span>
++                </button>
++                <button id="viewMetrics" class="btn btn-secondary">
++                    <span>View Metrics</span>
++                </button>
++            </div>
++        </div>
++
++        <!-- Active Tasks Table -->
++        <div class="card mt-8">
++            <div class="card-header">
++                <h3 class="card-title">Active Tasks</h3>
++                <p class="card-subtitle">Currently running evaluation tasks</p>
++            </div>
++            
++            <table class="table">
++                <thead>
++                    <tr>
++                        <th>Task ID</th>
++                        <th>Type</th>
++                        <th>Status</th>
++                        <th>Progress</th>
++                        <th>Started</th>
++                        <th>Actions</th>
++                    </tr>
++                </thead>
++                <tbody id="activeTasksTable">
++                    <!-- Tasks will be populated here -->
++                </tbody>
++            </table>
++        </div>
++
++        <!-- System Logs -->
++        <div class="card mt-8">
++            <div class="card-header">
++                <h3 class="card-title">System Logs</h3>
++                <p class="card-subtitle">Real-time system activity and events</p>
++            </div>
++            
++            <div id="systemLogs" style="height: 200px; overflow-y: auto; background: var(--secondary-50); padding: var(--space-4); border-radius: var(--radius-md); font-family: var(--font-mono); font-size: 0.75rem;">
++                <!-- Logs will be populated here -->
+             </div>
+         </div>
+     </div>
+
+@@ -1,71 +1,179 @@
